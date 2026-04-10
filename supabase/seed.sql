@@ -1,0 +1,116 @@
+-- ============================================================
+-- ChargeShare Local – Example Seed Data
+-- Run AFTER schema.sql (manually insert auth users first via Supabase dashboard)
+-- ============================================================
+
+-- NOTE: You need to create users via Supabase Authentication dashboard first.
+-- Then note the UUIDs and use them below.
+-- The trigger will auto-create public.users entries on sign up.
+
+-- -------------------------------------------------------
+-- For demo / development, you can manually insert users:
+-- -------------------------------------------------------
+
+-- Insert demo admin user (replace UUID with actual auth.users UUID)
+-- INSERT INTO public.users (id, full_name, email, role)
+-- VALUES ('00000000-0000-0000-0000-000000000001', 'Admin User', 'admin@example.com', 'admin');
+
+-- Insert demo host user
+-- INSERT INTO public.users (id, full_name, email, role)
+-- VALUES ('00000000-0000-0000-0000-000000000002', 'Sarah Mitchell', 'sarah@example.com', 'host');
+
+-- Insert demo driver user
+-- INSERT INTO public.users (id, full_name, email, role)
+-- VALUES ('00000000-0000-0000-0000-000000000003', 'James Lee', 'james@example.com', 'driver');
+
+-- -------------------------------------------------------
+-- Sample hosts (linked to user IDs above)
+-- -------------------------------------------------------
+-- INSERT INTO public.hosts (id, user_id, house_rules, response_time, verified)
+-- VALUES (
+--   '10000000-0000-0000-0000-000000000001',
+--   '00000000-0000-0000-0000-000000000002',
+--   'Please respect the space. No smoking. Leave the area as you found it.',
+--   'Usually within 1 hour',
+--   true
+-- );
+
+-- -------------------------------------------------------
+-- Sample charger listings
+-- -------------------------------------------------------
+-- INSERT INTO public.chargers (
+--   id, host_id, title, connector_type, level, power_kw,
+--   tesla_compatible, session_price,
+--   address_approx, lat, lng,
+--   exact_address_private, access_notes,
+--   availability_type, status
+-- ) VALUES
+-- (
+--   '20000000-0000-0000-0000-000000000001',
+--   '10000000-0000-0000-0000-000000000001',
+--   'Driveway Level 2 – Tesla friendly',
+--   'Tesla NACS', 'Level 2', 7.2,
+--   true, 5.00,
+--   'Shoreditch, London E1', 51.5229, -0.0737,
+--   '12 Example Street, London E1 6RF',
+--   'Ring the doorbell on arrival. Bay marked with green tape.',
+--   'always', 'active'
+-- ),
+-- (
+--   '20000000-0000-0000-0000-000000000002',
+--   '10000000-0000-0000-0000-000000000001',
+--   'Garage CCS Fast Charger',
+--   'CCS2', 'DC Fast', 50.0,
+--   false, 0.00,
+--   'Hackney, London E8', 51.5354, -0.0568,
+--   '45 Mare Street, London E8 4RT',
+--   'Enter via side gate. Code is 1234.',
+--   'on_request', 'active'
+-- ),
+-- (
+--   '20000000-0000-0000-0000-000000000003',
+--   '10000000-0000-0000-0000-000000000001',
+--   'Home L1 – overnight welcome',
+--   'NEMA 5-15', 'Level 1', 1.4,
+--   false, 2.00,
+--   'Bethnal Green, London E2', 51.5280, -0.0553,
+--   '78 Cambridge Heath Road, London E2 9PA',
+--   'Outdoor socket by the front gate. Please do not leave vehicle overnight without advance notice.',
+--   'scheduled', 'active'
+-- ),
+-- (
+--   '20000000-0000-0000-0000-000000000004',
+--   '10000000-0000-0000-0000-000000000001',
+--   'Type 2 Home Charger – 11kW',
+--   'Type 2 (Mennekes)', 'Level 2', 11.0,
+--   false, 3.00,
+--   'Islington, London N1', 51.5383, -0.1032,
+--   '23 Upper Street, London N1 0PQ',
+--   'Parking bay 3 outside the property.',
+--   'always', 'active'
+-- );
+
+-- -------------------------------------------------------
+-- Sample booking requests (after chargers and users created)
+-- -------------------------------------------------------
+-- INSERT INTO public.booking_requests (charger_id, driver_id, message, status)
+-- VALUES (
+--   '20000000-0000-0000-0000-000000000001',
+--   '00000000-0000-0000-0000-000000000003',
+--   'Hi Sarah, I would like to charge my Model 3 tonight around 7pm for 2 hours.',
+--   'approved'
+-- );
+
+-- -------------------------------------------------------
+-- Sample review
+-- -------------------------------------------------------
+-- INSERT INTO public.reviews (booking_id, reviewer_id, charger_id, rating, comment)
+-- SELECT
+--   br.id,
+--   '00000000-0000-0000-0000-000000000003',
+--   '20000000-0000-0000-0000-000000000001',
+--   5,
+--   'Excellent charger, very easy to find and use. Sarah was super responsive!'
+-- FROM public.booking_requests br
+-- WHERE br.driver_id = '00000000-0000-0000-0000-000000000003'
+-- LIMIT 1;
